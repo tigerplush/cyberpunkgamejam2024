@@ -4,73 +4,74 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PartyManager : MonoBehaviour
+public class PartyManager : Manager
 {
     [SerializeField]
-    private List<Character> _party = new List<Character>();
+    private GameObject[] _defensiveSpawnPoints;
     [SerializeField]
-    private GameObject[] _spawnPoints;
+    private GameObject[] _offensiveSpawnPoints;
     [SerializeField]
     private GameObject _characterPrefab;
 
-    public bool Defeated
-    {
-        get
-        {
-            return _party.Count == 0;
-        }
-    }
 
     /// <summary>
     /// Resets the whole party. Called by Reset button
     /// </summary>
     public void Reset()
     {
-        foreach(Character c in _party)
+        foreach(Character c in _offensiveMembers)
         {
             Destroy(c.gameObject);
         }
-        _party.Clear();
+        foreach (Character c in _defensiveMembers)
+        {
+            Destroy(c.gameObject);
+        }
+        _offensiveMembers.Clear();
+        _defensiveMembers.Clear();
     }
 
     /// <summary>
     /// Adds a character. Called by dropping an element in the drop zone.
     /// </summary>
     /// <param name="element"></param>
-    public void AddCharacter(Element element)
+    public void AddOffensiveCharacter(Element element)
     {
         Vector3 spawnPosition = Vector3.zero;
-        if (_spawnPoints != null && _spawnPoints.Length > 0)
+        if (_offensiveSpawnPoints != null && _offensiveSpawnPoints.Length > 0)
         {
-            int i = _party.Count % _spawnPoints.Length;
-            GameObject spawnPoint = _spawnPoints[i];
-            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (_party.Count / _spawnPoints.Length);
+            int i = _offensiveMembers.Count % _offensiveSpawnPoints.Length;
+            GameObject spawnPoint = _offensiveSpawnPoints[i];
+            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (_offensiveMembers.Count / _offensiveSpawnPoints.Length);
         }
 
         Character character = Instantiate(_characterPrefab, spawnPosition, Quaternion.identity)
             .GetComponent<Character>()
             .SetElement(element)
-            .SetName($"Party Member #{_party.Count}");
+            .SetName($"Offensive Party Member #{_offensiveMembers.Count}");
 
-        _party.Add(character);
+        _offensiveMembers.Add(character);
     }
 
-    public Element[] GetAttackTypes()
+    /// <summary>
+    /// Adds a character. Called by dropping an element in the drop zone.
+    /// </summary>
+    /// <param name="element"></param>
+    public void AddDefensiveCharacter(Element element)
     {
-        return _party.Select(c => c.Element).ToArray();
-    }
-
-    public void Resolve(Element[] elements)
-    {
-        for (int i = _party.Count - 1; i >= 0; i--)
+        Vector3 spawnPosition = Vector3.zero;
+        if (_defensiveSpawnPoints != null && _defensiveSpawnPoints.Length > 0)
         {
-            Character character = _party[i];
-            character.Resolve(elements);
-            if (character.IsDead)
-            {
-                _party.Remove(character);
-                Destroy(character.gameObject);
-            }
+            int i = _defensiveMembers.Count % _defensiveSpawnPoints.Length;
+            GameObject spawnPoint = _defensiveSpawnPoints[i];
+            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (_defensiveMembers.Count / _defensiveSpawnPoints.Length);
         }
+
+        Character character = Instantiate(_characterPrefab, spawnPosition, Quaternion.identity)
+            .GetComponent<Character>()
+            .SetElement(element)
+            .SetName($"Defensive Party Member #{_defensiveMembers.Count}");
+
+        _defensiveMembers.Add(character);
     }
 }

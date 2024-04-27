@@ -4,23 +4,16 @@ using System.Linq;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Manager
 {
     [SerializeField]
     private Element[] _availableElements;
     [SerializeField]
     private GameObject _characterPrefab;
     [SerializeField]
-    private List<Character> _enemies = new List<Character>();
+    private GameObject[] _offensiveSpawnPoints;
     [SerializeField]
-    private GameObject[] _spawnPoints;
-    public bool Defeated
-    {
-        get
-        {
-            return _enemies.Count == 0;
-        }
-    }
+    private GameObject[] _defensiveSpawnPoints;
 
     // Start is called before the first frame update
     void Start()
@@ -28,14 +21,14 @@ public class EnemyManager : MonoBehaviour
         Spawn(1);
     }
 
-    private void SpawnEnemy(int number)
+    private void SpawnEnemy(int number, List<Character> enemyList, GameObject[] spawnPoints)
     {
         Vector3 spawnPosition = Vector3.zero;
-        if(_spawnPoints != null && _spawnPoints.Length > 0)
+        if(spawnPoints != null && spawnPoints.Length > 0)
         {
-            int i = number % _spawnPoints.Length;
-            GameObject spawnPoint = _spawnPoints[i];
-            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (number / _spawnPoints.Length);
+            int i = number / 2;
+            GameObject spawnPoint = spawnPoints[i];
+            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (number / 4);
         }
 
         int randomElementNumber = Random.Range(0, _availableElements.Length);
@@ -46,7 +39,7 @@ public class EnemyManager : MonoBehaviour
             .SetElement(element)
             .SetName($"Enemy #{number}");
 
-        _enemies.Add(character);
+        enemyList.Add(character);
     }
 
     /// <summary>
@@ -55,33 +48,23 @@ public class EnemyManager : MonoBehaviour
     /// <param name="enemyCount"></param>
     public void Spawn(int enemyCount)
     {
-        foreach(Character character in _enemies)
+        foreach(Character character in _offensiveMembers)
         {
             Destroy(character.gameObject);
         }
-        _enemies.Clear();
-        for(int i = 0; i < enemyCount; i++)
-        {
-            SpawnEnemy(i);
-        }
-    }
+        _offensiveMembers.Clear();
 
-    public void Resolve(Element[] elements)
-    {
-        for(int i = _enemies.Count - 1; i >= 0; i--)
+        foreach (Character character in _defensiveMembers)
         {
-            Character character = _enemies[i];
-            character.Resolve(elements);
-            if(character.IsDead)
-            {
-                _enemies.Remove(character);
-                Destroy(character.gameObject);
-            }
+            Destroy(character.gameObject);
         }
-    }
+        _defensiveMembers.Clear();
 
-    public Element[] GetAttackTypes()
-    {
-        return _enemies.Select(c => c.Element).ToArray();
+        for (int i = 0; i < enemyCount; i++)
+        {
+            List<Character> enemies = i % 2 == 0 ? _offensiveMembers : _defensiveMembers;
+            GameObject[] spawnPoints = i % 2 == 0 ? _offensiveSpawnPoints : _defensiveSpawnPoints;
+            SpawnEnemy(i, enemies, spawnPoints);
+        }
     }
 }

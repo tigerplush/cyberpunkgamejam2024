@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -10,6 +11,8 @@ public class Character : MonoBehaviour
     private Element _element;
     [SerializeField]
     private Damage _damage;
+    [SerializeField]
+    private Damage _defensiveDamage;
 
     [SerializeField]
     private float _hp = 100f;
@@ -72,6 +75,56 @@ public class Character : MonoBehaviour
             }
         }
         Debug.Log($"{name} takes {damage} damage");
+        _hp -= damage;
+        OnHealthChanged?.Invoke(_hp);
+    }
+
+    public void Resolve(Attack[] attacks)
+    {
+        Debug.Log($"{attacks.Length} incoming attacks");
+        float damage = 0f;
+        string log = "";
+        foreach(Attack attack in attacks.Where(a => a.AttackType == AttackType.Offensive))
+        {
+            log += $"{attack} does ";
+            if(_element.Weakness == attack.Element && !attack.Debuffed)
+            {
+                log += $"{_damage.WeaknessDamage}";
+                damage += _damage.WeaknessDamage;
+            }
+            else if(_element.Strength == attack.Element)
+            {
+                log += $"{_damage.StrengthDamage}";
+                damage += _damage.StrengthDamage;
+            }
+            else
+            {
+                log += $"{_damage.NormalDamage}";
+                damage += _damage.NormalDamage;
+            }
+            log += $" damage to {name}\n";
+        }
+        foreach (Attack attack in attacks.Where(a => a.AttackType == AttackType.Defensive))
+        {
+            log += $"{attack} does ";
+            if (_element.Weakness == attack.Element && !attack.Debuffed)
+            {
+                log += $"{_defensiveDamage.WeaknessDamage}";
+                damage += _defensiveDamage.WeaknessDamage;
+            }
+            else if (_element.Strength == attack.Element)
+            {
+                log += $"{_defensiveDamage.StrengthDamage}";
+                damage += _defensiveDamage.StrengthDamage;
+            }
+            else
+            {
+                log += $"{_defensiveDamage.NormalDamage}";
+                damage += _defensiveDamage.NormalDamage;
+            }
+            log += $" damage to {name}\n";
+        }
+        Debug.Log(log);
         _hp -= damage;
         OnHealthChanged?.Invoke(_hp);
     }

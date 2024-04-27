@@ -173,6 +173,7 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 3886343689532187858}
   _element: {fileID: 0}
   _damage: {fileID: 11400000, guid: f9cd2d7f4895eef4a97b190e6b6852b6, type: 2}
+  _defensiveDamage: {fileID: 11400000, guid: 247277e72f8b9a343ad32500f1dbd1ab, type: 2}
   _hp: 100
 --- !u!1 &1942267098685721653
 GameObject:

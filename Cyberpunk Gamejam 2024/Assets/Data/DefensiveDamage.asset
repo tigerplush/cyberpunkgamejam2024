@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c1280dfd7ba59a4ab82826691b08024, type: 3}
-  m_Name: DefaultDamage
+  m_Name: DefensiveDamage
   m_EditorClassIdentifier: 
-  NormalDamage: 12
-  WeaknessDamage: 25
-  StrengthDamage: 6
+  NormalDamage: 2
+  WeaknessDamage: 3
+  StrengthDamage: 1

@@ -26,15 +26,15 @@ public class BattleManager : MonoBehaviour
 
     public void Round()
     {
-        Element[] partyElements = _partyManager.GetAttackTypes();
-        _enemyManager.Resolve(partyElements);
+        Attack[] partyAttacks = _partyManager.GetAttacks();
+        _enemyManager.Resolve(partyAttacks);
         if(_enemyManager.Defeated)
         {
             Debug.Log("Enemies is defeated...");
             return;
         }
-        Element[] enemyElements = _enemyManager.GetAttackTypes();
-        _partyManager.Resolve(enemyElements);
+        Attack[] enemyAttacks = _enemyManager.GetAttacks();
+        _partyManager.Resolve(enemyAttacks);
         if (_partyManager.Defeated)
         {
             Debug.Log("Party is defeated...");
