@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -12,6 +14,13 @@ public class EnemyManager : MonoBehaviour
     private List<Character> _enemies = new List<Character>();
     [SerializeField]
     private GameObject[] _spawnPoints;
+    public bool Defeated
+    {
+        get
+        {
+            return _enemies.Count == 0;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -55,5 +64,24 @@ public class EnemyManager : MonoBehaviour
         {
             SpawnEnemy(i);
         }
+    }
+
+    public void Resolve(Element[] elements)
+    {
+        for(int i = _enemies.Count - 1; i >= 0; i--)
+        {
+            Character character = _enemies[i];
+            character.Resolve(elements);
+            if(character.IsDead)
+            {
+                _enemies.Remove(character);
+                Destroy(character.gameObject);
+            }
+        }
+    }
+
+    public Element[] GetAttackTypes()
+    {
+        return _enemies.Select(c => c.Element).ToArray();
     }
 }

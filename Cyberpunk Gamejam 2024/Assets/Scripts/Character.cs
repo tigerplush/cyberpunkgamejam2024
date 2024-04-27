@@ -8,6 +8,27 @@ public class Character : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     [SerializeField]
     private Element _element;
+    [SerializeField]
+    private Damage _damage;
+
+    [SerializeField]
+    private float _hp = 100f;
+
+    public delegate void OnHealthChangedHandler(float newHealth);
+    public OnHealthChangedHandler OnHealthChanged;
+
+    public bool IsDead
+    {
+        get
+        {
+            return _hp <= 0f;
+        }
+    }
+
+    public Element Element
+    {
+        get { return _element; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -30,5 +51,28 @@ public class Character : MonoBehaviour
     {
         gameObject.name = name;
         return this;
+    }
+
+    public void Resolve(Element[] elements)
+    {
+        float damage = 0f;
+        foreach(Element element in elements)
+        {
+            if(_element.Weakness == element)
+            {
+                damage += _damage.WeaknessDamage;
+            }
+            else if(_element.Strength == element)
+            {
+                damage += _damage.StrengthDamage;
+            }
+            else
+            {
+                damage += _damage.NormalDamage;
+            }
+        }
+        Debug.Log($"{name} takes {damage} damage");
+        _hp -= damage;
+        OnHealthChanged?.Invoke(_hp);
     }
 }

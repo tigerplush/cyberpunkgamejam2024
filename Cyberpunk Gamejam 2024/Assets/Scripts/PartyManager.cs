@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,6 +12,14 @@ public class PartyManager : MonoBehaviour
     private GameObject[] _spawnPoints;
     [SerializeField]
     private GameObject _characterPrefab;
+
+    public bool Defeated
+    {
+        get
+        {
+            return _party.Count == 0;
+        }
+    }
 
     /// <summary>
     /// Resets the whole party. Called by Reset button
@@ -44,5 +53,24 @@ public class PartyManager : MonoBehaviour
             .SetName($"Party Member #{_party.Count}");
 
         _party.Add(character);
+    }
+
+    public Element[] GetAttackTypes()
+    {
+        return _party.Select(c => c.Element).ToArray();
+    }
+
+    public void Resolve(Element[] elements)
+    {
+        for (int i = _party.Count - 1; i >= 0; i--)
+        {
+            Character character = _party[i];
+            character.Resolve(elements);
+            if (character.IsDead)
+            {
+                _party.Remove(character);
+                Destroy(character.gameObject);
+            }
+        }
     }
 }

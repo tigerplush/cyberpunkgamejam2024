@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Aggro
   m_EditorClassIdentifier: 
   PrimaryColor: {r: 0.94509804, g: 0.56078434, b: 0.17254902, a: 1}
+  Weakness: {fileID: 11400000, guid: e952cb02474cb564db7edb728846f317, type: 2}
+  Strength: {fileID: 11400000, guid: f33136469e9348d459b452403b3e4539, type: 2}
