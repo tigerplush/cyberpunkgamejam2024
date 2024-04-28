@@ -22,19 +22,11 @@ public class Manager : MonoBehaviour
         List<Attack> list = new List<Attack>();
         foreach (Character c in _offensiveMembers)
         {
-            list.Add(new Attack()
-            {
-                Element = c.Element,
-                AttackType = c.AttackType
-            });
+            list.Add(c.GetAttack());
         }
         foreach (Character c in _defensiveMembers)
         {
-            list.Add(new Attack()
-            {
-                Element = c.Element,
-                AttackType = c.AttackType
-            });
+            list.Add(c.GetAttack());
         }
         return list.ToArray();
     }

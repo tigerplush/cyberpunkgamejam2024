@@ -22,6 +22,9 @@ public class Character : MonoBehaviour
     public delegate void OnHealthChangedHandler(float newHealth);
     public OnHealthChangedHandler OnHealthChanged;
 
+    [SerializeField]
+    private int _counter;
+
     public bool IsDead
     {
         get
@@ -69,76 +72,68 @@ public class Character : MonoBehaviour
         return this;
     }
 
-    public void Resolve(Element[] elements)
-    {
-        float damage = 0f;
-        foreach(Element element in elements)
-        {
-            if(_element.Weakness == element)
-            {
-                damage += _damage.WeaknessDamage;
-            }
-            else if(_element.Strength == element)
-            {
-                damage += _damage.StrengthDamage;
-            }
-            else
-            {
-                damage += _damage.NormalDamage;
-            }
-        }
-        Debug.Log($"{name} takes {damage} damage");
-        _hp -= damage;
-        OnHealthChanged?.Invoke(_hp);
-    }
-
     public void Resolve(Attack[] attacks)
     {
-        Debug.Log($"{attacks.Length} incoming attacks");
-        float damage = 0f;
+        float cumulativeDamage = 0f;
         string log = "";
         foreach(Attack attack in attacks.Where(a => a.AttackType == AttackType.Offensive))
         {
-            log += $"{attack} does ";
+            float damage = 0f;
             if(_element.Weakness == attack.Element && !attack.Debuffed)
             {
-                log += $"{_damage.WeaknessDamage}";
                 damage += _damage.WeaknessDamage;
             }
             else if(_element.Strength == attack.Element)
             {
-                log += $"{_damage.StrengthDamage}";
                 damage += _damage.StrengthDamage;
             }
             else
             {
-                log += $"{_damage.NormalDamage}";
                 damage += _damage.NormalDamage;
             }
-            log += $" damage to {name}\n";
+            damage *= attack.Multiplier;
+            log += $"{attack} does {damage} damage to {name}\n";
+            cumulativeDamage += damage;
         }
         foreach (Attack attack in attacks.Where(a => a.AttackType == AttackType.Defensive))
         {
-            log += $"{attack} does ";
+            float damage = 0f;
             if (_element.Weakness == attack.Element && !attack.Debuffed)
             {
-                log += $"{_defensiveDamage.WeaknessDamage}";
                 damage += _defensiveDamage.WeaknessDamage;
             }
             else if (_element.Strength == attack.Element)
             {
-                log += $"{_defensiveDamage.StrengthDamage}";
                 damage += _defensiveDamage.StrengthDamage;
             }
             else
             {
-                log += $"{_defensiveDamage.NormalDamage}";
                 damage += _defensiveDamage.NormalDamage;
             }
-            log += $" damage to {name}\n";
+            log += $"{attack} does {damage} damage to {name}\n";
+            cumulativeDamage += damage;
         }
         Debug.Log(log);
-        _hp -= damage;
+        _hp -= cumulativeDamage;
         OnHealthChanged?.Invoke(_hp);
+    }
+
+    public Attack GetAttack()
+    {
+        Attack attack = new Attack()
+        {
+            Element = _element,
+            AttackType = _attackType,
+            // if the counter is equal to the crit every round, we take the multiplier
+            // we need to subtract 1 because our counter starts at 0
+            Multiplier = _counter == (_element.CritEveryRound - 1) ? _element.CritMultiplier : 1f,
+        };
+        _counter += 1;
+        if(_counter > (_element.CritEveryRound - 1))
+        {
+            //if the increased counter is greater than crit every round, we reset it
+            _counter = 0;
+        }
+        return attack;
     }
 }
