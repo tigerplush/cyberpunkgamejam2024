@@ -209,6 +209,7 @@ public class Character : MonoBehaviour
         switch(special.SpecialType)
         {
             case SpecialType.Stun:
+                _originalPosition = transform.position;
                 _stunned = true;
                 break;
             case SpecialType.Charm:

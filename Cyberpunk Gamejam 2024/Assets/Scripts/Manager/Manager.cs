@@ -9,6 +9,72 @@ public class Manager : MonoBehaviour
     protected List<Character> _offensiveMembers = new List<Character>();
     [SerializeField]
     protected List<Character> _defensiveMembers = new List<Character>();
+    [SerializeField]
+    private GameObject[] _defensivePlacePoints;
+    [SerializeField]
+    private GameObject[] _offensivePlacePoints;
+    [SerializeField]
+    private GameObject _characterPrefab;
+    [SerializeField]
+    private GameObject _spawnPoint;
+
+
+    /// <summary>
+    /// Resets the whole party. Called by Reset button
+    /// </summary>
+    public void Reset()
+    {
+        foreach (Character c in _offensiveMembers)
+        {
+            Destroy(c.gameObject);
+        }
+        foreach (Character c in _defensiveMembers)
+        {
+            Destroy(c.gameObject);
+        }
+        _offensiveMembers.Clear();
+        _defensiveMembers.Clear();
+    }
+
+    /// <summary>
+    /// Adds a character. Called by dropping an element in the drop zone.
+    /// </summary>
+    /// <param name="element"></param>
+    public void AddOffensiveCharacter(Element element)
+    {
+        AddCharacter(element, _offensiveMembers, _offensivePlacePoints, AttackType.Offensive);
+    }
+
+    /// <summary>
+    /// Adds a character. Called by dropping an element in the drop zone.
+    /// </summary>
+    /// <param name="element"></param>
+    public void AddDefensiveCharacter(Element element)
+    {
+        AddCharacter(element, _defensiveMembers, _defensivePlacePoints, AttackType.Defensive);
+    }
+
+    private void AddCharacter(Element element, List<Character> list, GameObject[] placePoints, AttackType attackType)
+    {
+        Vector3 targetPosition = Vector3.zero;
+        if (placePoints != null && placePoints.Length > 0)
+        {
+            int i = list.Count % placePoints.Length;
+            GameObject targetPoint = placePoints[i];
+            targetPosition = targetPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (list.Count / placePoints.Length);
+        }
+        Character character = Instantiate(_characterPrefab, _spawnPoint.transform.position, Quaternion.identity, transform)
+            .GetComponent<Character>()
+            .SetElement(element)
+            .SetAttackType(attackType)
+            .SetName($"{attackType} Member #{list.Count}");
+
+        character.GetComponent<MovementController>()
+            .SetTargetPosition(targetPosition);
+
+        list.Add(character);
+    }
+
     public bool Defeated
     {
         get
@@ -22,7 +88,6 @@ public class Manager : MonoBehaviour
         List<Attack> list = new List<Attack>();
         foreach (Character c in _offensiveMembers.Where(m => !m.Unavailable))
         {
-            Debug.Log($"{c.name} is unavailable: {c.Unavailable}");
             list.Add(c.GetAttack());
         }
         foreach (Character c in _defensiveMembers)
