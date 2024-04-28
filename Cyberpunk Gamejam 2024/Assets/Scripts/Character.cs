@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -25,6 +26,14 @@ public class Character : MonoBehaviour
     [SerializeField]
     private int _counter;
 
+    [SerializeField]
+    private bool _turnedAround;
+    [SerializeField]
+    private bool _stunned;
+
+    [SerializeField]
+    private Vector3 _originalPosition;
+
     public bool IsDead
     {
         get
@@ -43,14 +52,43 @@ public class Character : MonoBehaviour
         get { return _attackType; }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public bool Unavailable
     {
-        if(_element == null )
+        get
+        {
+            return _stunned || _turnedAround;
+        }
+    }
+
+    public bool TurnedAround
+    {
+        get
+        {
+            return _turnedAround;
+        }
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        _originalPosition = transform.position;
+        if(_element == null)
         {
             return;
         }
         _spriteRenderer.color = _element.PrimaryColor;
+    }
+
+    private void Update()
+    {
+        if(_stunned)
+        {
+            transform.position = _originalPosition + Random.onUnitSphere * 0.1f;
+        }
+        else if(_turnedAround)
+        {
+            transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+        }
     }
 
     public Character SetElement(Element element)
@@ -74,6 +112,10 @@ public class Character : MonoBehaviour
 
     public void Resolve(Attack[] attacks)
     {
+        if(attacks == null || attacks.Length == 0)
+        {
+            return;
+        }
         float cumulativeDamage = 0f;
         string log = "";
         foreach(Attack attack in attacks.Where(a => a.AttackType == AttackType.Offensive))
@@ -124,16 +166,67 @@ public class Character : MonoBehaviour
         {
             Element = _element,
             AttackType = _attackType,
-            // if the counter is equal to the crit every round, we take the multiplier
+            // if the counter is equal to the apply every x rounds, we take the multiplier
             // we need to subtract 1 because our counter starts at 0
-            Multiplier = _counter == (_element.CritEveryRound - 1) ? _element.CritMultiplier : 1f,
+            Multiplier = _counter == (_element.ApplyEveryXRounds - 1) ? _element.CritMultiplier : 1f,
         };
-        _counter += 1;
-        if(_counter > (_element.CritEveryRound - 1))
+        if(_element.CritMultiplier > 1f)
         {
-            //if the increased counter is greater than crit every round, we reset it
-            _counter = 0;
+            _counter += 1;
+            if (_counter > (_element.ApplyEveryXRounds - 1))
+            {
+                //if the increased counter is greater than apply every x rounds, we reset it
+                _counter = 0;
+            }
         }
         return attack;
+    }
+
+    public Special GetSpecial()
+    {
+        Special special = new Special()
+        {
+            SpecialType = _counter == (_element.ApplyEveryXRounds - 1) ? _element.SpecialType : SpecialType.None,
+        };
+        if(_element.SpecialType != SpecialType.None)
+        {
+            _counter += 1;
+            if (_counter > (_element.ApplyEveryXRounds - 1))
+            {
+                //if the increased counter is greater than apply every x rounds, we reset it
+                _counter = 0;
+            }
+        }
+        return special;
+    }
+
+    /// <summary>
+    /// Applies a special to this character
+    /// </summary>
+    /// <param name="special"></param>
+    public void Apply(Special special)
+    {
+        switch(special.SpecialType)
+        {
+            case SpecialType.Stun:
+                _stunned = true;
+                break;
+            case SpecialType.Charm:
+                _turnedAround = true;
+                break;
+            case SpecialType.None:
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Resets conditions
+    /// </summary>
+    public void NewRound()
+    {
+        _stunned = false;
+        _turnedAround = false;
+        transform.rotation = Quaternion.identity;
     }
 }

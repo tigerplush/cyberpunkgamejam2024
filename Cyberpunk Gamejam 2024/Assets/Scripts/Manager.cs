@@ -20,8 +20,9 @@ public class Manager : MonoBehaviour
     public Attack[] GetAttacks()
     {
         List<Attack> list = new List<Attack>();
-        foreach (Character c in _offensiveMembers)
+        foreach (Character c in _offensiveMembers.Where(m => !m.Unavailable))
         {
+            Debug.Log($"{c.name} is unavailable: {c.Unavailable}");
             list.Add(c.GetAttack());
         }
         foreach (Character c in _defensiveMembers)
@@ -42,6 +43,19 @@ public class Manager : MonoBehaviour
         {
             // Resolve Defensive
             ResolveDefensive(attacks);
+        }
+    }
+
+    public void Resolve(Special[] specials)
+    {
+        Debug.Log($"Trying to resolve {specials.Count(s => s.SpecialType != SpecialType.None)} specials");
+        foreach(Special s in specials.Where(s => s.SpecialType != SpecialType.None))
+        {
+            Character c = _offensiveMembers.FirstOrDefault(m => !m.Unavailable);
+            if(c != null)
+            {
+                c.Apply(s);
+            }
         }
     }
 
@@ -66,6 +80,13 @@ public class Manager : MonoBehaviour
                 Destroy(c.gameObject);
             }
         }
+
+        List<Attack> turnedAttacks = new List<Attack>();
+        foreach(Character c in _offensiveMembers.Where(m => m.TurnedAround))
+        {
+            turnedAttacks.Add(c.GetAttack());
+        }
+        ResolveDefensive(turnedAttacks.ToArray());
     }
 
     protected void ResolveDefensive(Attack[] attacks)
@@ -79,6 +100,24 @@ public class Manager : MonoBehaviour
                 _defensiveMembers.Remove(c);
                 Destroy(c.gameObject);
             }
+        }
+    }
+
+    public Special[] GetSpecials()
+    {
+        List<Special> specials = new List<Special>();
+        foreach(Character c in _offensiveMembers.Where(m => !m.Unavailable))
+        {
+            specials.Add(c.GetSpecial());
+        }
+        return specials.ToArray();
+    }
+
+    public void NewRound()
+    {
+        foreach(Character c in _offensiveMembers)
+        {
+            c.NewRound();
         }
     }
 }

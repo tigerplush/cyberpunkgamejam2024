@@ -15,3 +15,6 @@ MonoBehaviour:
   PrimaryColor: {r: 0.59607846, g: 0.80784315, b: 0, a: 1}
   Weakness: {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
   Strength: {fileID: 11400000, guid: bac3bf5f7e2380e4c85a5624761a7471, type: 2}
+  ApplyEveryXRounds: 3
+  CritMultiplier: 1
+  SpecialType: 1

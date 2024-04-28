@@ -26,6 +26,14 @@ public class BattleManager : MonoBehaviour
 
     public void Round()
     {
+        _partyManager.NewRound();
+        _enemyManager.NewRound();
+        Special[] partySpecials = _partyManager.GetSpecials();
+        _enemyManager.Resolve(partySpecials);
+
+        Special[] enemySpecials = _enemyManager.GetSpecials();
+        _partyManager.Resolve(enemySpecials);
+
         Attack[] partyAttacks = _partyManager.GetAttacks();
         _enemyManager.Resolve(partyAttacks);
         if(_enemyManager.Defeated)
