@@ -41,3 +41,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Skybox
+    uniqueID: 550709115
+    locked: 0
+  - name: SkyDecorations
+    uniqueID: 3790793845
+    locked: 0
+  - name: HouseBackWall
+    uniqueID: 3827503053
+    locked: 0
+  - name: InteriorBehindCharacters
+    uniqueID: 3137828959
+    locked: 0
+  - name: Characters
+    uniqueID: 3589760367
+    locked: 0
+  - name: InteriorFrontCharacters
+    uniqueID: 3634183783
+    locked: 0
+  - name: HouseSideWalls
+    uniqueID: 2327669235
+    locked: 0

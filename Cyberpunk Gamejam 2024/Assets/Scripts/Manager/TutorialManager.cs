@@ -18,6 +18,8 @@ public class TutorialManager : MonoBehaviour
     private Element _firstEnemyElement;
     [SerializeField]
     private RuntimeSet _movementControllerRuntimeset;
+    [SerializeField]
+    private RoomManager _roomManager;
 
     // Start is called before the first frame update
     private IEnumerator Start()
@@ -30,5 +32,10 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _battleManager.StartBattle();
+        yield return new WaitUntil(() => _enemyManager.Defeated);
+        _partyManager.SendAllOffscreen();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _roomManager.ScrollToRoom(1);
+        yield return new WaitUntil(() => _roomManager.DestinationReached);
     }
 }

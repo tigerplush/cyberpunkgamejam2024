@@ -18,6 +18,19 @@ public class Manager : MonoBehaviour
     [SerializeField]
     private GameObject _spawnPoint;
 
+    [SerializeField]
+    public GameObject _pointOffScreen;
+
+    public List<Character> Party
+    {
+        get
+        {
+            List<Character> list = new List<Character>();
+            list.AddRange(_offensiveMembers);
+            list.AddRange(_defensiveMembers);
+            return list;
+        }
+    }
 
     /// <summary>
     /// Resets the whole party. Called by Reset button
@@ -183,6 +196,15 @@ public class Manager : MonoBehaviour
         foreach(Character c in _offensiveMembers)
         {
             c.NewRound();
+        }
+    }
+
+    public void SendAllOffscreen()
+    {
+        foreach(Character c in Party)
+        {
+            c.GetComponent<MovementController>()
+                .SetTargetPosition(_pointOffScreen.transform.position);
         }
     }
 }

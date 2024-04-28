@@ -614,6 +614,7 @@ MonoBehaviour:
   _firstCharacterElement: {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
   _firstEnemyElement: {fileID: 11400000, guid: f33136469e9348d459b452403b3e4539, type: 2}
   _movementControllerRuntimeset: {fileID: 11400000, guid: 19d23756ec090c64f890f1fb8574a446, type: 2}
+  _roomManager: {fileID: 705559789}
 --- !u!4 &463888030
 Transform:
   m_ObjectHideFlags: 0
@@ -854,8 +855,8 @@ MonoBehaviour:
   OnDrop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PartyManager, Assembly-CSharp
+      - m_Target: {fileID: 1700548903}
+        m_TargetAssemblyTypeName: Manager, Assembly-CSharp
         m_MethodName: AddDefensiveCharacter
         m_Mode: 0
         m_Arguments:
@@ -1010,7 +1011,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 000000007b27d32075ecf2e1cd0f23e45f7807bb6f65f7d5673e9dd8f369bd8a
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1162,6 +1163,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 514746269}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &705559787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 705559788}
+  - component: {fileID: 705559789}
+  m_Layer: 0
+  m_Name: RoomManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &705559788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705559787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &705559789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705559787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6304bcbff98d524fb0f7404f462a00b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _room: {fileID: 6243226955961501857, guid: 054a18714c5215e428d05e6c88fc1813, type: 3}
+  _roomHeight: 6
+  _roomNumber: 0
+  _originalPosition: {x: 0, y: 0, z: 0}
+  _t: 0
 --- !u!1 &717203380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2400,13 +2450,14 @@ Transform:
   m_GameObject: {fileID: 1700548901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.5, y: -2, z: 0}
+  m_LocalPosition: {x: -4, y: -1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 150934561}
   - {fileID: 514746269}
   - {fileID: 568177961}
+  - {fileID: 1969045234}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1700548903
@@ -2431,6 +2482,7 @@ MonoBehaviour:
   - {fileID: 553163029}
   _characterPrefab: {fileID: 1432659810425836781, guid: 229c7f5bed415ee43a45e36a56a8818b, type: 3}
   _spawnPoint: {fileID: 568177960}
+  _pointOffScreen: {fileID: 1969045233}
 --- !u!1 &1747110608
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,7 +2550,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.5, y: -2}
+  m_AnchoredPosition: {x: 4, y: -1.8}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1776432246
@@ -2523,6 +2575,7 @@ MonoBehaviour:
   - {fileID: 1402690591}
   _characterPrefab: {fileID: 1432659810425836781, guid: 229c7f5bed415ee43a45e36a56a8818b, type: 3}
   _spawnPoint: {fileID: 366733241}
+  _pointOffScreen: {fileID: 0}
 --- !u!1 &1861930336
 GameObject:
   m_ObjectHideFlags: 0
@@ -2721,6 +2774,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915958798}
   m_CullTransparentMesh: 1
+--- !u!1 &1969045233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1969045234}
+  m_Layer: 0
+  m_Name: PointOffScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1969045234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969045233}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 15, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1700548902}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1986794882
 GameObject:
   m_ObjectHideFlags: 0
@@ -3009,8 +3093,8 @@ MonoBehaviour:
   OnDrop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PartyManager, Assembly-CSharp
+      - m_Target: {fileID: 1700548903}
+        m_TargetAssemblyTypeName: Manager, Assembly-CSharp
         m_MethodName: AddOffensiveCharacter
         m_Mode: 0
         m_Arguments:
@@ -3033,3 +3117,4 @@ SceneRoots:
   - {fileID: 1700548902}
   - {fileID: 173460422}
   - {fileID: 463888030}
+  - {fileID: 705559788}
