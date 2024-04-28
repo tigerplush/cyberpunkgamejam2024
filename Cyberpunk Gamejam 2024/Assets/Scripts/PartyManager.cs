@@ -37,20 +37,7 @@ public class PartyManager : Manager
     /// <param name="element"></param>
     public void AddOffensiveCharacter(Element element)
     {
-        Vector3 spawnPosition = Vector3.zero;
-        if (_offensiveSpawnPoints != null && _offensiveSpawnPoints.Length > 0)
-        {
-            int i = _offensiveMembers.Count % _offensiveSpawnPoints.Length;
-            GameObject spawnPoint = _offensiveSpawnPoints[i];
-            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (_offensiveMembers.Count / _offensiveSpawnPoints.Length);
-        }
-
-        Character character = Instantiate(_characterPrefab, spawnPosition, Quaternion.identity)
-            .GetComponent<Character>()
-            .SetElement(element)
-            .SetName($"Offensive Party Member #{_offensiveMembers.Count}");
-
-        _offensiveMembers.Add(character);
+        AddCharacter(element, _offensiveMembers, _offensiveSpawnPoints, AttackType.Offensive);
     }
 
     /// <summary>
@@ -59,19 +46,25 @@ public class PartyManager : Manager
     /// <param name="element"></param>
     public void AddDefensiveCharacter(Element element)
     {
+        AddCharacter(element, _defensiveMembers, _defensiveSpawnPoints, AttackType.Defensive);
+    }
+
+    private void AddCharacter(Element element, List<Character> list, GameObject[] spawnPoints, AttackType attackType)
+    {
         Vector3 spawnPosition = Vector3.zero;
-        if (_defensiveSpawnPoints != null && _defensiveSpawnPoints.Length > 0)
+        if (spawnPoints != null && spawnPoints.Length > 0)
         {
-            int i = _defensiveMembers.Count % _defensiveSpawnPoints.Length;
-            GameObject spawnPoint = _defensiveSpawnPoints[i];
-            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (_defensiveMembers.Count / _defensiveSpawnPoints.Length);
+            int i = list.Count % spawnPoints.Length;
+            GameObject spawnPoint = spawnPoints[i];
+            spawnPosition = spawnPoint.transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (list.Count / spawnPoints.Length);
         }
 
         Character character = Instantiate(_characterPrefab, spawnPosition, Quaternion.identity)
             .GetComponent<Character>()
             .SetElement(element)
-            .SetName($"Defensive Party Member #{_defensiveMembers.Count}");
+            .SetAttackType(attackType)
+            .SetName($"{attackType} Party Member #{list.Count}");
 
-        _defensiveMembers.Add(character);
+        list.Add(character);
     }
 }

@@ -10,6 +10,8 @@ public class Character : MonoBehaviour
     [SerializeField]
     private Element _element;
     [SerializeField]
+    private AttackType _attackType;
+    [SerializeField]
     private Damage _damage;
     [SerializeField]
     private Damage _defensiveDamage;
@@ -33,6 +35,11 @@ public class Character : MonoBehaviour
         get { return _element; }
     }
 
+    public AttackType AttackType
+    {
+        get { return _attackType; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +54,12 @@ public class Character : MonoBehaviour
     {
         _element = element;
         _spriteRenderer.color = _element.PrimaryColor;
+        return this;
+    }
+
+    public Character SetAttackType(AttackType attackType)
+    {
+        _attackType = attackType;
         return this;
     }
 

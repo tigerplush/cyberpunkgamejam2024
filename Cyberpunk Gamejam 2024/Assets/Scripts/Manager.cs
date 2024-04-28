@@ -25,7 +25,7 @@ public class Manager : MonoBehaviour
             list.Add(new Attack()
             {
                 Element = c.Element,
-                AttackType = AttackType.Offensive
+                AttackType = c.AttackType
             });
         }
         foreach (Character c in _defensiveMembers)
@@ -33,7 +33,7 @@ public class Manager : MonoBehaviour
             list.Add(new Attack()
             {
                 Element = c.Element,
-                AttackType = AttackType.Defensive
+                AttackType = c.AttackType
             });
         }
         return list.ToArray();

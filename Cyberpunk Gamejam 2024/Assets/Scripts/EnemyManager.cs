@@ -21,7 +21,7 @@ public class EnemyManager : Manager
         Spawn(1);
     }
 
-    private void SpawnEnemy(int number, List<Character> enemyList, GameObject[] spawnPoints)
+    private void SpawnEnemy(int number, List<Character> enemyList, GameObject[] spawnPoints, AttackType attackType)
     {
         Vector3 spawnPosition = Vector3.zero;
         if(spawnPoints != null && spawnPoints.Length > 0)
@@ -37,6 +37,7 @@ public class EnemyManager : Manager
         Character character = Instantiate(_characterPrefab, spawnPosition, Quaternion.identity)
             .GetComponent<Character>()
             .SetElement(element)
+            .SetAttackType(attackType)
             .SetName($"Enemy #{number}");
 
         enemyList.Add(character);
@@ -64,7 +65,8 @@ public class EnemyManager : Manager
         {
             List<Character> enemies = i % 2 == 0 ? _offensiveMembers : _defensiveMembers;
             GameObject[] spawnPoints = i % 2 == 0 ? _offensiveSpawnPoints : _defensiveSpawnPoints;
-            SpawnEnemy(i, enemies, spawnPoints);
+            AttackType attackType = i % 2 == 0 ? AttackType.Offensive : AttackType.Defensive;
+            SpawnEnemy(i, enemies, spawnPoints, attackType);
         }
     }
 }
