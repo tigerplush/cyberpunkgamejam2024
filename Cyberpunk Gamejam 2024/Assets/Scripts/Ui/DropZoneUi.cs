@@ -11,10 +11,14 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private GameObject _panel;
     [SerializeField]
     private Pointer _pointer;
+    [SerializeField]
+    private CurrentSelectedRecruit _currentSelectedRecruit;
 
     public UnityEvent<Element> OnDrop;
+    public UnityEvent<Recruit> OnRecruit;
 
     private bool _pointerIsInBounds = false;
+    private Recruit _lastRecruit = null;
 
     private void OnEnable()
     {
@@ -22,12 +26,21 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         {
             _pointer.OnValuesChanged += UpdateUi;
         }
+        if(_currentSelectedRecruit != null)
+        {
+            _currentSelectedRecruit.OnValueChanged += UpdateRecruit;
+        }
     }
+
     private void OnDisable()
     {
         if (_pointer != null)
         {
             _pointer.OnValuesChanged -= UpdateUi;
+        }
+        if (_currentSelectedRecruit != null)
+        {
+            _currentSelectedRecruit.OnValueChanged -= UpdateRecruit;
         }
     }
 
@@ -40,6 +53,22 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             OnDrop?.Invoke(_pointer.Element);
         }
         _panel.SetActive(_pointer.Enabled);
+    }
+
+    private void UpdateRecruit(Recruit recruit)
+    {
+        if(recruit != null)
+        {
+            _lastRecruit = recruit;
+        }
+        if(_panel != null)
+        {
+            _panel.SetActive(recruit != null);
+        }
+        if (_pointerIsInBounds && recruit == null)
+        {
+            OnRecruit?.Invoke(_lastRecruit);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

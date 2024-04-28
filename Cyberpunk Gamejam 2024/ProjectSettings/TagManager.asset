@@ -62,3 +62,12 @@ TagManager:
   - name: HouseSideWalls
     uniqueID: 2327669235
     locked: 0
+  - name: HUD
+    uniqueID: 782868147
+    locked: 0
+  - name: UI
+    uniqueID: 3324003357
+    locked: 0
+  - name: UIOverlays
+    uniqueID: 1888707923
+    locked: 0

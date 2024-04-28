@@ -28,6 +28,9 @@ public class MovementController : MonoBehaviour
         _movementControllerSet.Unregister(gameObject);
     }
 
+    /// <summary>
+    /// Has the controller reached its destination?
+    /// </summary>
     public bool ReachedDestination
     {
         get
@@ -36,6 +39,21 @@ public class MovementController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Immediately teleports controller to a given position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns>this instance for chaining</returns>
+    public MovementController SetPosition(Vector3 position)
+    {
+        transform.position = position;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets a target position the controller will lerp to.
+    /// </summary>
+    /// <param name="targetPosition"></param>
     public void SetTargetPosition(Vector3 targetPosition)
     {
         _originalPosition = transform.position;
@@ -53,8 +71,16 @@ public class MovementController : MonoBehaviour
         transform.position = Vector3.Lerp(_originalPosition, (Vector3)_targetPosition, _t);
         if(_t >= 1f)
         {
+            _originalPosition = (Vector3)_targetPosition;
             _targetPosition = null;
-            Debug.Log("Reached destination");
         }
+    }
+
+    /// <summary>
+    /// Teleports this controller to the last original position.
+    /// </summary>
+    public void Reset()
+    {
+        transform.position = _originalPosition;
     }
 }

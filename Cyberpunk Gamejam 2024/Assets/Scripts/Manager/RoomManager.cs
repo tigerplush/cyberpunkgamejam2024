@@ -40,6 +40,7 @@ public class RoomManager : MonoBehaviour
 
     public void ScrollToRoom(int roomNumber)
     {
+        _originalPosition = transform.position;
         _t = 0f;
         _targetPosition = new Vector3(0f, -1f * roomNumber * _roomHeight);
     }

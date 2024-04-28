@@ -10,6 +10,8 @@ public class Manager : MonoBehaviour
     [SerializeField]
     protected List<Character> _defensiveMembers = new List<Character>();
     [SerializeField]
+    private List<Character> _benchedMembers = new List<Character>();
+    [SerializeField]
     private GameObject[] _defensivePlacePoints;
     [SerializeField]
     private GameObject[] _offensivePlacePoints;
@@ -21,6 +23,13 @@ public class Manager : MonoBehaviour
     [SerializeField]
     public GameObject _pointOffScreen;
 
+    [SerializeField]
+    private int _maxPartySize = 8;
+    [SerializeField]
+    private int _maxMembersOnField = 4;
+    [SerializeField]
+    private int _maxMembersInZone = 4;
+
     public List<Character> Party
     {
         get
@@ -29,6 +38,62 @@ public class Manager : MonoBehaviour
             list.AddRange(_offensiveMembers);
             list.AddRange(_defensiveMembers);
             return list;
+        }
+    }
+
+    public bool CanAddOffensive
+    {
+        get
+        {
+            if(_benchedMembers.Count + Party.Count > _maxPartySize)
+            {
+                return false;
+            }
+            if(Party.Count >= _maxMembersOnField)
+            {
+                return false;
+            }
+            if(_offensiveMembers.Count >= _maxMembersInZone)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public bool CanAddDefensive
+    {
+        get
+        {
+            if (_benchedMembers.Count + Party.Count > _maxPartySize)
+            {
+                return false;
+            }
+            if (Party.Count >= _maxMembersOnField)
+            {
+                return false;
+            }
+            if (_defensiveMembers.Count >= _maxMembersInZone)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public bool CanAddBench
+    {
+        get
+        {
+            if (_benchedMembers.Count + Party.Count > _maxPartySize)
+            {
+                return false;
+            }
+            if (_benchedMembers.Count >= _maxPartySize - _maxMembersOnField)
+            {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -65,6 +130,11 @@ public class Manager : MonoBehaviour
     public void AddDefensiveCharacter(Element element)
     {
         AddCharacter(element, _defensiveMembers, _defensivePlacePoints, AttackType.Defensive);
+    }
+
+    public void AddBenchedCharacter(Element element)
+    {
+
     }
 
     private void AddCharacter(Element element, List<Character> list, GameObject[] placePoints, AttackType attackType)
@@ -126,7 +196,6 @@ public class Manager : MonoBehaviour
 
     public void Resolve(Special[] specials)
     {
-        Debug.Log($"Trying to resolve {specials.Count(s => s.SpecialType != SpecialType.None)} specials");
         foreach(Special s in specials.Where(s => s.SpecialType != SpecialType.None))
         {
             Character c = _offensiveMembers.FirstOrDefault(m => !m.Unavailable);
@@ -205,6 +274,33 @@ public class Manager : MonoBehaviour
         {
             c.GetComponent<MovementController>()
                 .SetTargetPosition(_pointOffScreen.transform.position);
+        }
+    }
+
+    /// <summary>
+    /// Resets the positions of all party members to the offscreen point and let's them walk to their assigned position again
+    /// </summary>
+    public void ResetPositions()
+    {
+        int off = 0;
+        int def = 0;
+        foreach(Character c in Party)
+        {
+            Vector3 targetPosition;
+            if(c.AttackType == AttackType.Offensive)
+            {
+                targetPosition = _offensivePlacePoints[off %  _offensivePlacePoints.Length].transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (off / _offensivePlacePoints.Length);
+                off += 1;
+            }
+            else
+            {
+                targetPosition = _defensivePlacePoints[def % _defensivePlacePoints.Length].transform.position + new Vector3(0.25f, 0.25f, 0.25f) * (def / _defensivePlacePoints.Length);
+                def += 1;
+            }
+
+            c.GetComponent<MovementController>()
+                .SetPosition(_spawnPoint.transform.position)
+                .SetTargetPosition(targetPosition);
         }
     }
 }

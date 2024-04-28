@@ -17,9 +17,13 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private Element _firstEnemyElement;
     [SerializeField]
+    private Element _secondRecruitElement;
+    [SerializeField]
     private RuntimeSet _movementControllerRuntimeset;
     [SerializeField]
     private RoomManager _roomManager;
+    [SerializeField]
+    private RewardManager _rewardManager;
 
     // Start is called before the first frame update
     private IEnumerator Start()
@@ -37,5 +41,10 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _roomManager.ScrollToRoom(1);
         yield return new WaitUntil(() => _roomManager.DestinationReached);
+        _partyManager.ResetPositions();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _rewardManager.SpawnRecruit(_secondRecruitElement, 100);
+        yield return new WaitForNextFrameUnit();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
     }
 }
