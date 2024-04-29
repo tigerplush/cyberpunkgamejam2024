@@ -10,6 +10,12 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     [SerializeField]
     private GameObject _panel;
     [SerializeField]
+    private Image _panelImage;
+    [SerializeField]
+    private Color _enabledColor;
+    [SerializeField]
+    private Color _disabledColor;
+    [SerializeField]
     private Pointer _pointer;
     [SerializeField]
     private CurrentSelectedRecruit _currentSelectedRecruit;
@@ -19,6 +25,8 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private bool _pointerIsInBounds = false;
     private Recruit _lastRecruit = null;
+
+    private bool _enabled;
 
     private void OnEnable()
     {
@@ -46,7 +54,7 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void UpdateUi()
     {
-        if(_pointerIsInBounds && !_pointer.Enabled)
+        if(_pointerIsInBounds && !_pointer.Enabled && _enabled)
         {
             // if the pointer is in bounds of the drop zone and the pointer is no longer enabled,
             // it means we did a drop here
@@ -79,5 +87,17 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnPointerExit(PointerEventData eventData)
     {
         _pointerIsInBounds = false;
+    }
+
+    public void Enable()
+    {
+        _enabled = true;
+        _panelImage.color = _enabledColor;
+    }
+
+    public void Disable()
+    {
+        _enabled = false;
+        _panelImage.color = _disabledColor;
     }
 }

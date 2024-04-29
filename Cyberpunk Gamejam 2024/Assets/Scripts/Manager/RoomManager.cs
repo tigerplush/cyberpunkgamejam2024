@@ -34,7 +34,7 @@ public class RoomManager : MonoBehaviour
 
     public void SpawnRoom()
     {
-        Instantiate(_room, new Vector3(0f, _roomNumber * _roomHeight), Quaternion.identity, transform);
+        Instantiate(_room, transform).transform.localPosition = new Vector3(0f, _roomNumber * _roomHeight);
         _roomNumber += 1;
     }
 
