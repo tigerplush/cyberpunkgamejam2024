@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class TooltipUi : MonoBehaviour
@@ -16,7 +15,7 @@ public class TooltipUi : MonoBehaviour
     [SerializeField]
     private int _characterWrapLimit;
     [SerializeField]
-    private StandaloneInputModule _inputModule;
+    private Canvas _parent;
 
     public void Set(string description, string header = "")
     {
@@ -39,9 +38,17 @@ public class TooltipUi : MonoBehaviour
         {
             UpdateSize();
         }
-        Debug.Log(Input.mousePosition);
-        //transform.position = pos;
+        Vector3 mousePosition = Input.mousePosition;
+        float width = ((RectTransform)transform).sizeDelta.x;
+        float xSize = mousePosition.x + ((RectTransform)transform).sizeDelta.x;
+        float canvasWidth = ((RectTransform)_parent.transform).sizeDelta.x;
+        if (xSize > canvasWidth)
+        {
+            mousePosition.x = canvasWidth - width;
+        }
+        transform.position = mousePosition;
     }
+
     private void UpdateSize()
     {
         int headerLength = _header.text.Length;
