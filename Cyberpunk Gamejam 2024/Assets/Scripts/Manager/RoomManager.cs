@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
@@ -29,7 +30,6 @@ public class RoomManager : MonoBehaviour
     void Start()
     {
         SpawnRoom();
-        SpawnRoom();
     }
 
     public void SpawnRoom()
@@ -57,5 +57,14 @@ public class RoomManager : MonoBehaviour
         {
             _targetPosition = null;
         }
+    }
+
+    public IEnumerator SpawnAndScrollToNextRoom()
+    {
+        SpawnRoom();
+        yield return new WaitForNextFrameUnit();
+        ScrollToRoom(_roomNumber - 1);
+        yield return new WaitUntil(() => DestinationReached);
+        yield return null;
     }
 }

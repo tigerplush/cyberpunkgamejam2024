@@ -54,11 +54,12 @@ public class MovementController : MonoBehaviour
     /// Sets a target position the controller will lerp to.
     /// </summary>
     /// <param name="targetPosition"></param>
-    public void SetTargetPosition(Vector3 targetPosition)
+    public GameObject SetTargetPosition(Vector3 targetPosition)
     {
         _originalPosition = transform.position;
         _targetPosition = targetPosition;
         _t = 0f;
+        return gameObject;
     }
 
     private void Update()

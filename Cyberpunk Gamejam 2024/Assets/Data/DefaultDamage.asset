@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DefaultDamage
   m_EditorClassIdentifier: 
   NormalDamage: 12
-  WeaknessDamage: 25
-  StrengthDamage: 6
+  WeaknessDamage: 16
+  StrengthDamage: 8

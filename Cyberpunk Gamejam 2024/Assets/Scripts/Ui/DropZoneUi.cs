@@ -26,7 +26,8 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private bool _pointerIsInBounds = false;
     private Recruit _lastRecruit = null;
 
-    private bool _enabled;
+    [SerializeField]
+    private bool _enabled = true;
 
     private void OnEnable()
     {
@@ -73,7 +74,7 @@ public class DropZoneUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         {
             _panel.SetActive(recruit != null);
         }
-        if (_pointerIsInBounds && recruit == null)
+        if (_pointerIsInBounds && recruit == null && _enabled)
         {
             OnRecruit?.Invoke(_lastRecruit);
         }

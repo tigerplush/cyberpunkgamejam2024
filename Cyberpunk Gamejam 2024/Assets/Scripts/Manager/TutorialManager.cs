@@ -26,17 +26,34 @@ public class TutorialManager : MonoBehaviour
     private RoomManager _roomManager;
     [SerializeField]
     private RewardManager _rewardManager;
+    [SerializeField]
+    private RunManager _runManager;
 
     [SerializeField]
     private DropZoneUi _offensiveZone;
     [SerializeField]
     private DropZoneUi _benchZone;
+    [SerializeField]
+    private ScriptableBoolAttribute _isTutorialEnabled;
 
     // Start is called before the first frame update
-    private IEnumerator Start()
+    private void Start()
     {
+        if (_isTutorialEnabled != null && !_isTutorialEnabled.Value)
+        {
+            //If the tutorial is disabled, we return.
+            return;
+        }
+        StartCoroutine(StartTutorial());
+    }
+
+    private IEnumerator StartTutorial()
+    {
+        //Setup
         _benchZone.Disable();
-        // spawn a character offscreen
+
+        // Room 1 - basic combat
+        // A party member defeats an enemy, player receives enough money for recruitment
         _partyManager.AddOffensiveCharacter(_firstCharacterElement);
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
@@ -47,26 +64,67 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => _enemyManager.Defeated);
         _partyManager.SendAllOffscreen();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
-        _roomManager.ScrollToRoom(1);
+
+        // Room 2 - recruit a new party member into the defense
+        yield return _roomManager.SpawnAndScrollToNextRoom();
         yield return new WaitUntil(() => _roomManager.DestinationReached);
         _partyManager.ResetPositions();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
-        _rewardManager.SpawnRecruit(_secondRecruitElement, 100);
+        _rewardManager.SpawnRecruit(_secondRecruitElement, 100, 0);
         _offensiveZone.Disable();
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         yield return new WaitUntil(() => _partyManager.Party.Count == 2);
         _partyManager.SendAllOffscreen();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
-        _roomManager.SpawnRoom();
-        yield return new WaitForNextFrameUnit();
-        _roomManager.ScrollToRoom(2);
-        yield return new WaitUntil(() => _roomManager.DestinationReached);
+
+        // Room 3 - Offense barely survives, active and passive abilities are shown
+        yield return _roomManager.SpawnAndScrollToNextRoom();
         _partyManager.ResetPositions();
         _enemyManager.AddOffensiveCharacter(_secondEnemyElement);
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _battleManager.StartBattle();
+        yield return new WaitUntil(() => _enemyManager.Defeated);
+        _partyManager.SendAllOffscreen();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+
+        // Room 4 - resort
+        // put offensive member on bench
+        // put defensive member in offense
+        // click start
+        yield return _roomManager.SpawnAndScrollToNextRoom();
+        _partyManager.ResetPositions();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+
+
+        _partyManager.SendAllOffscreen();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+
+        // Room 5 - TPK
+        // player is left with 100 credits, barely enough to recruit
+        yield return _roomManager.SpawnAndScrollToNextRoom();
+        _partyManager.ResetPositions();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+
+        _enemyManager.AddOffensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddOffensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddOffensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddOffensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddDefensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddDefensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddDefensiveCharacter(_secondEnemyElement);
+        _enemyManager.AddDefensiveCharacter(_secondEnemyElement);
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _battleManager.StartBattle();
+        yield return new WaitUntil(() => _partyManager.Defeated);
+        _enemyManager.SendAllOffscreen();
+        yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _enemyManager.Reset();
+
+        // Teardown
         _offensiveZone.Enable();
         _benchZone.Enable();
+        _runManager.StartRun();
+        enabled = false;
     }
 }
