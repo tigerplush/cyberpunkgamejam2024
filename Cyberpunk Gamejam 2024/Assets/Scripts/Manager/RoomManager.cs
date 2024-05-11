@@ -42,7 +42,7 @@ public class RoomManager : MonoBehaviour
     {
         _originalPosition = transform.position;
         _t = 0f;
-        _targetPosition = new Vector3(0f, -1f * roomNumber * _roomHeight);
+        _targetPosition = new Vector3(_originalPosition.x, -1f * roomNumber * _roomHeight);
     }
 
     private void Update()

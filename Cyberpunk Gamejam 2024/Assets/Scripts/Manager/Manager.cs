@@ -16,6 +16,8 @@ public class Manager : MonoBehaviour
     [SerializeField]
     private GameObject[] _offensivePlacePoints;
     [SerializeField]
+    private GameObject[] _benchedPlacePoints;
+    [SerializeField]
     private GameObject _characterPrefab;
     [SerializeField]
     private GameObject _spawnPoint;
@@ -134,7 +136,7 @@ public class Manager : MonoBehaviour
 
     public void AddBenchedCharacter(Element element)
     {
-
+        AddCharacter(element, _benchedMembers, _benchedPlacePoints, AttackType.None);
     }
 
     private void AddCharacter(Element element, List<Character> list, GameObject[] placePoints, AttackType attackType)
