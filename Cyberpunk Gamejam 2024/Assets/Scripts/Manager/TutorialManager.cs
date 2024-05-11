@@ -35,6 +35,8 @@ public class TutorialManager : MonoBehaviour
     private DropZoneUi _benchZone;
     [SerializeField]
     private ScriptableBoolAttribute _isTutorialEnabled;
+    [SerializeField]
+    private TextbubbleAttribute _textbubble;
 
     // Start is called before the first frame update
     private void Start()
@@ -57,11 +59,15 @@ public class TutorialManager : MonoBehaviour
         _partyManager.AddOffensiveCharacter(_firstCharacterElement);
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _textbubble.Set(true, "This is your first character.Click this bubble, an enemy will appear and they will fight.");
+        yield return new WaitUntil(() => !_textbubble.Enabled);
         _enemyManager.AddOffensiveCharacter(_firstEnemyElement);
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _battleManager.StartBattle();
         yield return new WaitUntil(() => _enemyManager.Defeated);
+        _textbubble.Set(true, "Great job, you defeated the enemy and received <i>100 Credits</i>.");
+        yield return new WaitUntil(() => !_textbubble.Enabled);
         _partyManager.SendAllOffscreen();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
 
@@ -74,7 +80,10 @@ public class TutorialManager : MonoBehaviour
         _offensiveZone.Disable();
         yield return new WaitForNextFrameUnit();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
+        _textbubble.Set(true, "Recruit the new character by dragging them into the defensive drop zone.");
         yield return new WaitUntil(() => _partyManager.Party.Count == 2);
+        _textbubble.Set(true, "Defensive characters will contribute less to the damage but protect your offensive characters.");
+        yield return new WaitUntil(() => !_textbubble.Enabled);
         _partyManager.SendAllOffscreen();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
 
@@ -120,6 +129,8 @@ public class TutorialManager : MonoBehaviour
         _enemyManager.SendAllOffscreen();
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _enemyManager.Reset();
+        _textbubble.Set(true, "You loose when your party is defeated, but this is was the tutorial, the real game starts now.");
+        yield return new WaitUntil(() => !_textbubble.Enabled);
 
         // Teardown
         _offensiveZone.Enable();
