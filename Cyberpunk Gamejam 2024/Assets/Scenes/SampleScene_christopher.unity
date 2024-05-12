@@ -519,7 +519,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _partyManager: {fileID: 1700548903}
   _enemyManager: {fileID: 1776432246}
-  _currency: {fileID: 11400000, guid: 0f7c76afd3f1ac64683f667ed9354c87, type: 2}
 --- !u!4 &173460422
 Transform:
   m_ObjectHideFlags: 0
@@ -5143,6 +5142,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  _roomConfigs:
+  - RoomType: 0
+    PossibleElements:
+    - {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
+    - {fileID: 11400000, guid: bac3bf5f7e2380e4c85a5624761a7471, type: 2}
+    - {fileID: 11400000, guid: f33136469e9348d459b452403b3e4539, type: 2}
+    - {fileID: 11400000, guid: e952cb02474cb564db7edb728846f317, type: 2}
+    OffensiveEnemies: []
+    DefensiveEnemies: []
+  - RoomType: 1
+    PossibleElements: []
+    OffensiveEnemies:
+    - PossibleElements:
+      - {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
+      - {fileID: 11400000, guid: bac3bf5f7e2380e4c85a5624761a7471, type: 2}
+      - {fileID: 11400000, guid: f33136469e9348d459b452403b3e4539, type: 2}
+      - {fileID: 11400000, guid: e952cb02474cb564db7edb728846f317, type: 2}
+    DefensiveEnemies: []
+  - RoomType: 1
+    PossibleElements: []
+    OffensiveEnemies:
+    - PossibleElements:
+      - {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
+      - {fileID: 11400000, guid: bac3bf5f7e2380e4c85a5624761a7471, type: 2}
+      - {fileID: 11400000, guid: f33136469e9348d459b452403b3e4539, type: 2}
+      - {fileID: 11400000, guid: e952cb02474cb564db7edb728846f317, type: 2}
+    DefensiveEnemies: []
   _isTutorialEnabled: {fileID: 11400000, guid: b75a087e46806764dbb8a810160c6c48, type: 2}
   _allElements:
   - {fileID: 11400000, guid: 6a952e7fed665134b9042de40b5c7fe0, type: 2}
