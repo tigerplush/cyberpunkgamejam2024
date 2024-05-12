@@ -11,4 +11,5 @@ public class Element : ScriptableObject
     public int ApplyEveryXRounds = -1;
     public float CritMultiplier = 1f;
     public SpecialType SpecialType;
+    public Sprite Icon;
 }

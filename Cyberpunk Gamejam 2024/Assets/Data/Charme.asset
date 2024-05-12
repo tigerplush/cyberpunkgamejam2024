@@ -18,3 +18,4 @@ MonoBehaviour:
   ApplyEveryXRounds: 3
   CritMultiplier: 1
   SpecialType: 2
+  Icon: {fileID: 21300000, guid: c0e7bad159d4a82498ea0e3c04d51b55, type: 3}

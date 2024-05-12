@@ -11,6 +11,10 @@ using UnityEngine.Events;
 public class RunManager : MonoBehaviour
 {
     public UnityEvent<string> OnGameOver;
+
+    public delegate void OnProbabilityCollapseHandler();
+    public OnProbabilityCollapseHandler OnProbabilityCollapse;
+
     [SerializeField]
     private List<RoomConfiguration> _roomConfigs = new List<RoomConfiguration>();
     [SerializeField]
@@ -44,6 +48,14 @@ public class RunManager : MonoBehaviour
     private Currency _currency;
 
     private int _startRoom;
+
+    public List<RoomConfiguration> RoomConfigs
+    {
+        get
+        {
+            return _roomConfigs;
+        }
+    }
 
     private void Start()
     {
@@ -85,6 +97,7 @@ public class RunManager : MonoBehaviour
                 config.PossibleElements = new[] { element };
             }
         }
+        OnProbabilityCollapse?.Invoke();
     }
 
     private IEnumerator Run()
