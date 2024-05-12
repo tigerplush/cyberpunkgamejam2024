@@ -90,7 +90,6 @@ public class RunManager : MonoBehaviour
     private IEnumerator Run()
     {
         int currentRoom = _roomManager.CurrentRoom - _startRoom;
-        Debug.Log(currentRoom);
         if(currentRoom >= _roomConfigs.Count)
         {
             OnGameOver?.Invoke("You made it to the top of the tower!");
@@ -146,12 +145,14 @@ public class RunManager : MonoBehaviour
         {
             int i = Random.Range(0, enemyConfig.PossibleElements.Length);
             _enemyManager.AddOffensiveCharacter(enemyConfig.PossibleElements[i]);
+            yield return new WaitForNextFrameUnit();
         }
 
         foreach (EnemyConfiguration enemyConfig in config.DefensiveEnemies)
         {
             int i = Random.Range(0, enemyConfig.PossibleElements.Length);
             _enemyManager.AddDefensiveCharacter(enemyConfig.PossibleElements[i]);
+            yield return new WaitForNextFrameUnit();
         }
 
         yield return new WaitUntil(() => _movementControllerRuntimeset.DestinationReached);
