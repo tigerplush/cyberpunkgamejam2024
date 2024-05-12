@@ -139,6 +139,7 @@ public class TutorialManager : MonoBehaviour
         _offensiveZone.Enable();
         _benchZone.Enable();
         _runManager.StartRun();
+        _currency.Credits += 100;
         enabled = false;
     }
 }
