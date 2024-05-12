@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu]
@@ -20,6 +21,14 @@ public class RuntimeSet : ScriptableObject
         if(Set.Contains(entry))
         {
             Set.Remove(entry);
+        }
+    }
+
+    public bool DestinationReached
+    {
+        get
+        {
+            return Set.All(g => g.GetComponent<MovementController>().ReachedDestination);
         }
     }
 }

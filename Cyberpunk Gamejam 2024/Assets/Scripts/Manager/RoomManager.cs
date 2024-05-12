@@ -26,6 +26,14 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public int CurrentRoom
+    {
+        get
+        {
+            return _roomNumber;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {

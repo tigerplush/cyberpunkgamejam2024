@@ -9,8 +9,6 @@ public class BattleManager : MonoBehaviour
     private Manager _partyManager;
     [SerializeField]
     private Manager _enemyManager;
-    [SerializeField]
-    private Currency _currency;
 
     public void StartBattle()
     {
@@ -29,7 +27,6 @@ public class BattleManager : MonoBehaviour
         if (_enemyManager.Defeated)
         {
             Debug.Log("Enemy is defeated...");
-            _currency.Credits += 100;
             yield break;
         }
         StartCoroutine(Battle());
