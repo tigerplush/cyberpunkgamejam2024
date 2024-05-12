@@ -1409,6 +1409,7 @@ MonoBehaviour:
   _benchZone: {fileID: 639095412}
   _isTutorialEnabled: {fileID: 11400000, guid: b75a087e46806764dbb8a810160c6c48, type: 2}
   _textbubble: {fileID: 11400000, guid: 142b5dc2dc4b82041a213f675f4c5e4c, type: 2}
+  _currency: {fileID: 11400000, guid: 0f7c76afd3f1ac64683f667ed9354c87, type: 2}
 --- !u!4 &463888030
 Transform:
   m_ObjectHideFlags: 0

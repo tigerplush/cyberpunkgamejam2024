@@ -37,6 +37,8 @@ public class TutorialManager : MonoBehaviour
     private ScriptableBoolAttribute _isTutorialEnabled;
     [SerializeField]
     private TextbubbleAttribute _textbubble;
+    [SerializeField]
+    private Currency _currency;
 
     // Start is called before the first frame update
     private void Start()
@@ -66,6 +68,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => _movementControllerRuntimeset.Set.All(g => g.GetComponent<MovementController>().ReachedDestination));
         _battleManager.StartBattle();
         yield return new WaitUntil(() => _enemyManager.Defeated);
+        _currency.Credits += 100;
         _textbubble.Set(true, "Great job, you defeated the enemy and received <i>100 Credits</i>.");
         yield return new WaitUntil(() => !_textbubble.Enabled);
         _partyManager.SendAllOffscreen();
